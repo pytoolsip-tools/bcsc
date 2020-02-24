@@ -58,13 +58,18 @@ class MainViewUI(wx.ScrolledWindow):
 		self.resetScrollbars(); # 重置滚动条
 
 	def createControls(self):
-		# self.getCtr().createCtrByKey("key", self._curPath + "***View"); # , parent = self, params = {}
-		self.createTestCtrl();
+		self.getCtr().createCtrByKey("BinaryConversionView", self._curPath + "../view/BinaryConversionView", params = {
+			"size" : (320, self.GetSize().y),
+		}); # , parent = self
+		self.getCtr().createCtrByKey("ScientificCalculatorView", self._curPath + "../view/ScientificCalculatorView", params = {
+			"size" : (400, self.GetSize().y),
+		}); # , parent = self
 		pass;
 		
 	def initViewLayout(self):
 		box = wx.BoxSizer(wx.HORIZONTAL);
-		box.Add(self.testCtrl);
+		box.Add(self.getCtr().getUIByKey("BinaryConversionView"));
+		box.Add(self.getCtr().getUIByKey("ScientificCalculatorView"));
 		self.SetSizerAndFit(box);
 
 	def resetScrollbars(self):
@@ -77,6 +82,3 @@ class MainViewUI(wx.ScrolledWindow):
 
 	def updateView(self, data):
 		pass;
-
-	def createTestCtrl(self):
-		self.testCtrl = wx.TextCtrl(self, value = "测试文本控件", size = self.GetSize(), style = wx.TE_MULTILINE);
