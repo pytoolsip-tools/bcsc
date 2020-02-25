@@ -22,9 +22,9 @@ class ScientificCalculatorViewCtr(object):
 		self._className_ = ScientificCalculatorViewCtr.__name__;
 		self._curPath = os.path.dirname(os.path.realpath(__file__)).replace("\\", "/") + "/";
 		self.__CtrMap = {}; # 所创建的控制器
-		self.initUI(parent, params); # 初始化视图UI
 		self.registerEventMap(); # 注册事件
 		self.bindBehaviors(); # 绑定组件
+		self.initUI(parent, params); # 初始化视图UI
 		self.createTimers();
 
 	def __del__(self):
@@ -85,9 +85,11 @@ class ScientificCalculatorViewCtr(object):
 			_GG("EventDispatcher").unregister(eventId, self, callbackName);
 
 	def bindBehaviors(self):
+		_GG("BehaviorManager").bindBehavior(self, {"path" : "behavior/CalculatorBehavior", "basePath" : GetPathByRelativePath("../../", self._curPath)});
 		pass;
 		
 	def unbindBehaviors(self):
+		_GG("BehaviorManager").unbindBehavior(self, {"path" : "behavior/CalculatorBehavior", "basePath" : GetPathByRelativePath("../../", self._curPath)});
 		pass;
 			
 	def updateView(self, data):
@@ -109,4 +111,6 @@ class ScientificCalculatorViewCtr(object):
 	def onTimer(self, event = None):
 		if not self.getUI().isPointInItemRect(wx.GetMousePosition()): # 判断鼠标位置是否在节点内
 			self.getUI().resetEnterItem();
+		# 检测是否点击选中的后一帧
+		self.getUI().checkEnterItemOnClick();
 		pass;

@@ -10,55 +10,6 @@ import wx;
 from _Global import _GG;
 from function.base import *;
 
-itemConfig = [
-	{"val" : "CL", "normalColor" : wx.Colour(205, 155, 155), "enterColor" : wx.Colour(205, 96, 96)},
-	{"val" : "asin", "normalColor" : wx.Colour(240, 240, 240), "enterColor" : wx.Colour(200, 200, 200)},
-	{"val" : "acos", "normalColor" : wx.Colour(240, 240, 240), "enterColor" : wx.Colour(200, 200, 200)},
-	{"val" : "atan", "normalColor" : wx.Colour(240, 240, 240), "enterColor" : wx.Colour(200, 200, 200)},
-	{"val" : "<", "normalColor" : wx.Colour(205, 186, 150), "enterColor" : wx.Colour(205, 149, 12)},
-	
-	{"val" : "e", "normalColor" : wx.Colour(210, 250, 210), "enterColor" : wx.Colour(156, 250, 156)},
-	{"val" : "sin", "normalColor" : wx.Colour(240, 240, 240), "enterColor" : wx.Colour(200, 200, 200)},
-	{"val" : "cos", "normalColor" : wx.Colour(240, 240, 240), "enterColor" : wx.Colour(200, 200, 200)},
-	{"val" : "tan", "normalColor" : wx.Colour(240, 240, 240), "enterColor" : wx.Colour(200, 200, 200)},
-	{"val" : "Pi", "normalColor" : wx.Colour(210, 250, 210), "enterColor" : wx.Colour(156, 250, 156)},
-	
-	{"val" : "C(x, y)", "normalColor" : wx.Colour(210, 210, 250), "enterColor" : wx.Colour(181, 160, 255)},
-	{"val" : "1/x", "normalColor" : wx.Colour(230, 230, 230), "enterColor" : wx.Colour(200, 200, 200)},
-	{"val" : "|x|", "normalColor" : wx.Colour(230, 230, 230), "enterColor" : wx.Colour(200, 200, 200)},
-	{"val" : "n!", "normalColor" : wx.Colour(230, 230, 230), "enterColor" : wx.Colour(200, 200, 200)},
-	{"val" : "mod", "normalColor" : wx.Colour(230, 230, 230), "enterColor" : wx.Colour(200, 200, 200)},
-	
-	{"val" : "A(x, y)", "normalColor" : wx.Colour(210, 210, 250), "enterColor" : wx.Colour(181, 160, 255)},
-	{"val" : "(", "normalColor" : wx.Colour(230, 230, 230), "enterColor" : wx.Colour(200, 200, 200)},
-	{"val" : ")", "normalColor" : wx.Colour(230, 230, 230), "enterColor" : wx.Colour(200, 200, 200)},
-	{"val" : "^", "normalColor" : wx.Colour(230, 230, 230), "enterColor" : wx.Colour(200, 200, 200)},
-	{"val" : "/", "normalColor" : wx.Colour(230, 230, 230), "enterColor" : wx.Colour(200, 200, 200)},
-	
-	{"val" : "sqrt", "normalColor" : wx.Colour(230, 230, 230), "enterColor" : wx.Colour(200, 200, 200)},
-	{"val" : "7", "normalColor" : "white", "enterColor" : wx.Colour(200, 200, 200)},
-	{"val" : "8", "normalColor" : "white", "enterColor" : wx.Colour(200, 200, 200)},
-	{"val" : "9", "normalColor" : "white", "enterColor" : wx.Colour(200, 200, 200)},
-	{"val" : "*", "normalColor" : wx.Colour(230, 230, 230), "enterColor" : wx.Colour(200, 200, 200)},
-	
-	{"val" : "pow(x,y)", "normalColor" : wx.Colour(230, 230, 230), "enterColor" : wx.Colour(200, 200, 200)},
-	{"val" : "4", "normalColor" : "white", "enterColor" : wx.Colour(200, 200, 200)},
-	{"val" : "5", "normalColor" : "white", "enterColor" : wx.Colour(200, 200, 200)},
-	{"val" : "6", "normalColor" : "white", "enterColor" : wx.Colour(200, 200, 200)},
-	{"val" : "-", "normalColor" : wx.Colour(230, 230, 230), "enterColor" : wx.Colour(200, 200, 200)},
-	
-	{"val" : "log(x, y)", "normalColor" : wx.Colour(230, 230, 230), "enterColor" : wx.Colour(200, 200, 200)},
-	{"val" : "1", "normalColor" : "white", "enterColor" : wx.Colour(200, 200, 200)},
-	{"val" : "2", "normalColor" : "white", "enterColor" : wx.Colour(200, 200, 200)},
-	{"val" : "3", "normalColor" : "white", "enterColor" : wx.Colour(200, 200, 200)},
-	{"val" : "+", "normalColor" : wx.Colour(230, 230, 230), "enterColor" : wx.Colour(200, 200, 200)},
-	
-	{"val" : "ln", "normalColor" : wx.Colour(230, 230, 230), "enterColor" : wx.Colour(200, 200, 200)},
-	{"val" : "+/-", "normalColor" : "white", "enterColor" : wx.Colour(200, 200, 200)},
-	{"val" : "0", "normalColor" : "white", "enterColor" : wx.Colour(200, 200, 200)},
-	{"val" : ".", "normalColor" : "white", "enterColor" : wx.Colour(200, 200, 200)},
-	{"val" : "=", "normalColor" : wx.Colour(108, 166, 205), "enterColor" : wx.Colour(79, 148, 205)},
-];
 
 class ScientificCalculatorViewUI(wx.Panel):
 	"""docstring for ScientificCalculatorViewUI"""
@@ -105,19 +56,23 @@ class ScientificCalculatorViewUI(wx.Panel):
 
 	def createResultView(self):
 		self.__resultPanel = wx.Panel(self, size = (self.GetSize().x, -1));
-		processTC = wx.TextCtrl(self.__resultPanel, size = (self.GetSize().x, -1), style = wx.TE_READONLY);
-		resultTC = wx.TextCtrl(self.__resultPanel, size = (self.GetSize().x, 120), style = wx.TE_READONLY|wx.TE_RIGHT|wx.TE_MULTILINE);
+		resultTC = wx.TextCtrl(self.__resultPanel, size = (self.GetSize().x, -1), style = wx.TE_READONLY|wx.TE_RIGHT);
+		processTC = wx.TextCtrl(self.__resultPanel, size = (self.GetSize().x, 120), value = "0", style = wx.TE_READONLY|wx.TE_RIGHT|wx.TE_MULTILINE);
+		processTC.SetFont(wx.Font(28, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD));
 		# 设置布局
 		box = wx.BoxSizer(wx.VERTICAL);
-		box.Add(processTC, flag = wx.ALIGN_CENTER);
 		box.Add(resultTC, flag = wx.ALIGN_CENTER);
+		box.Add(processTC, flag = wx.ALIGN_CENTER);
 		self.__resultPanel.SetSizerAndFit(box);
+		self.__resultPanel._result = resultTC;
+		self.__resultPanel._process = processTC;
+		self.__resultPanel._temp = ["0"]; # 中间值
 	
 	def createInputView(self):
 		self.__inputPanel = wx.Panel(self, size = (self.GetSize().x, -1));
 		items = [];
-		for cfg in itemConfig:
-			item = self.createItemView(self.__inputPanel, cfg["val"], cfg["normalColor"], cfg["enterColor"]);
+		for cfg in self.getCtr().getItemConfig():
+			item = self.createItemView(self.__inputPanel, cfg);
 			items.append(item);
 			pass;
 		cols = 5; # 默认5行
@@ -128,7 +83,8 @@ class ScientificCalculatorViewUI(wx.Panel):
 		self.__inputPanel.SetSizerAndFit(gridSizer);
 		pass;
 	
-	def createItemView(self, parent, label = "", normalColor = "white", enterColor = "gray"):
+	def createItemView(self, parent, cfg = {}):
+		label, normalColor, enterColor = cfg.get("val", ""), cfg.get("normalColor", "white"), cfg.get("enterColor", "gray");
 		p = wx.Panel(parent, size = (80, 40), style = wx.BORDER_THEME);
 		p._normalColor = normalColor;
 		p._enterColor = enterColor;
@@ -143,10 +99,23 @@ class ScientificCalculatorViewUI(wx.Panel):
 				self.updateItemBgColor();
 				# 更新enterItem
 				self.__enterItem = p;
+				self.__enterItem._onClick = False;
 				self.updateItemBgColor(True);
 		p.Bind(wx.EVT_ENTER_WINDOW, onEnterItem);
 		ctx.Bind(wx.EVT_ENTER_WINDOW, onEnterItem);
+		def onClickItem(event):
+			if self.__enterItem.SetBackgroundColour("gray"):
+				self.__enterItem.Refresh();
+				self.__enterItem._onClick = True;
+			if hasattr(self.getCtr(), "onCalculate") and callable(getattr(self.getCtr(), "onCalculate")):
+				result, process, temp = getattr(self.getCtr(), "onCalculate")(self.__resultPanel._result.GetValue(), self.__resultPanel._process.GetValue(), self.__resultPanel._temp, cfg = cfg);
+				self.__resultPanel._result.SetValue(result);
+				self.__resultPanel._process.SetValue(process);
+				self.__resultPanel._temp = temp;
+		p.Bind(wx.EVT_LEFT_DOWN, onClickItem);
+		ctx.Bind(wx.EVT_LEFT_DOWN, onClickItem);
 		# 更新背景色
+		p._onClick = False;
 		if p.SetBackgroundColour(normalColor):
 			p.Refresh();
 		return p;
@@ -168,6 +137,12 @@ class ScientificCalculatorViewUI(wx.Panel):
 		if convertPos[0] >= 0 and convertPos[0] <= item.GetSize()[0] and convertPos[1] >= 0 and convertPos[1] <= item.GetSize()[1]:
 			return True;
 		return False;
+	
+	def checkEnterItemOnClick(self):
+		if self.__enterItem and self.__enterItem._onClick:
+			self.__enterItem._onClick = False;
+			self.updateItemBgColor(True);
+		pass;
 	
 	def resetEnterItem(self):
 		self.updateItemBgColor();
