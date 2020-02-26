@@ -64,12 +64,16 @@ class MainViewUI(wx.ScrolledWindow):
 		self.getCtr().createCtrByKey("ScientificCalculatorView", self._curPath + "../view/ScientificCalculatorView", params = {
 			"size" : (400, self.GetSize().y),
 		}); # , parent = self
+		self.getCtr().createCtrByKey("RuleDescView", self._curPath + "../view/RuleDescView", params = {
+			"size" : (200, self.GetSize().y),
+		}); # , parent = self
 		pass;
 		
 	def initViewLayout(self):
 		box = wx.BoxSizer(wx.HORIZONTAL);
 		box.Add(self.getCtr().getUIByKey("BinaryConversionView"));
 		box.Add(self.getCtr().getUIByKey("ScientificCalculatorView"));
+		box.Add(self.getCtr().getUIByKey("RuleDescView"));
 		self.SetSizerAndFit(box);
 
 	def resetScrollbars(self):

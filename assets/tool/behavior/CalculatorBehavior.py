@@ -59,25 +59,25 @@ itemConfig = [
 	{"val" : "tan", "normalColor" : wx.Colour(240, 240, 240), "enterColor" : wx.Colour(200, 200, 200), "func" : "math.tan(", "fmt" : "tan(", "type" : CalcType.Single},
 	{"val" : "Pi", "normalColor" : wx.Colour(210, 250, 210), "enterColor" : wx.Colour(156, 250, 156), "func" : "math.pi", "fmt" : "Pi", "type" : CalcType.Const},
 	
-	{"val" : "C(x, y)", "normalColor" : wx.Colour(210, 210, 250), "enterColor" : wx.Colour(181, 160, 255), "func" : "combine(", "fmt" : "C(", "type" : CalcType.Double},
+	{"val" : "C(x,y)", "normalColor" : wx.Colour(210, 210, 250), "enterColor" : wx.Colour(181, 160, 255), "func" : "combine(", "fmt" : "C(", "type" : CalcType.Double},
 	{"val" : "deg", "normalColor" : wx.Colour(230, 230, 230), "enterColor" : wx.Colour(200, 200, 200), "func" : "math.degrees(", "fmt" : "deg(", "type" : CalcType.Single},
 	{"val" : "rad", "normalColor" : wx.Colour(230, 230, 230), "enterColor" : wx.Colour(200, 200, 200), "func" : "math.radians(", "fmt" : "rad(", "type" : CalcType.Single},
 	{"val" : "n!", "normalColor" : wx.Colour(230, 230, 230), "enterColor" : wx.Colour(200, 200, 200), "func" : "factorial(", "fmt" : "fact(", "type" : CalcType.Single},
 	{"val" : "%", "normalColor" : wx.Colour(230, 230, 230), "enterColor" : wx.Colour(200, 200, 200), "func" : "%", "fmt" : "%", "type" : CalcType.Operate},
 	
-	{"val" : "A(x, y)", "normalColor" : wx.Colour(210, 210, 250), "enterColor" : wx.Colour(181, 160, 255), "func" : "arrange(", "fmt" : "A(", "type" : CalcType.Double},
+	{"val" : "A(x,y)", "normalColor" : wx.Colour(210, 210, 250), "enterColor" : wx.Colour(181, 160, 255), "func" : "arrange(", "fmt" : "A(", "type" : CalcType.Double},
 	{"val" : "(", "normalColor" : wx.Colour(230, 230, 230), "enterColor" : wx.Colour(200, 200, 200), "func" : "(", "fmt" : "(", "type" : CalcType.BkLeft},
 	{"val" : ")", "normalColor" : wx.Colour(230, 230, 230), "enterColor" : wx.Colour(200, 200, 200), "func" : ")", "fmt" : ")", "type" : CalcType.BkRight},
-	{"val" : "|x|", "normalColor" : wx.Colour(230, 230, 230), "enterColor" : wx.Colour(200, 200, 200), "func" : "math.fabs(", "fmt" : "abs(", "type" : CalcType.Single},
+	{"val" : "^", "normalColor" : wx.Colour(230, 230, 230), "enterColor" : wx.Colour(200, 200, 200), "func" : "**", "fmt" : "^", "type" : CalcType.Operate},
 	{"val" : "/", "normalColor" : wx.Colour(230, 230, 230), "enterColor" : wx.Colour(200, 200, 200), "func" : "/", "fmt" : "/", "type" : CalcType.Operate},
 	
-	{"val" : "sqrt", "normalColor" : wx.Colour(230, 230, 230), "enterColor" : wx.Colour(200, 200, 200), "func" : "math.sqrt(", "fmt" : "sqrt(", "type" : CalcType.Single},
+	{"val" : "|x|", "normalColor" : wx.Colour(230, 230, 230), "enterColor" : wx.Colour(200, 200, 200), "func" : "math.fabs(", "fmt" : "abs(", "type" : CalcType.Single},
 	{"val" : "7", "normalColor" : "white", "enterColor" : wx.Colour(200, 200, 200), "func" : "7", "fmt" : "7", "type" : CalcType.Const},
 	{"val" : "8", "normalColor" : "white", "enterColor" : wx.Colour(200, 200, 200), "func" : "8", "fmt" : "8", "type" : CalcType.Const},
 	{"val" : "9", "normalColor" : "white", "enterColor" : wx.Colour(200, 200, 200), "func" : "9", "fmt" : "9", "type" : CalcType.Const},
 	{"val" : "*", "normalColor" : wx.Colour(230, 230, 230), "enterColor" : wx.Colour(200, 200, 200), "func" : "*", "fmt" : "*", "type" : CalcType.Operate},
 	
-	{"val" : "pow(x,y)", "normalColor" : wx.Colour(230, 230, 230), "enterColor" : wx.Colour(200, 200, 200), "func" : "math.pow(", "fmt" : "pow(", "type" : CalcType.Double},
+	{"val" : "sqrt", "normalColor" : wx.Colour(230, 230, 230), "enterColor" : wx.Colour(200, 200, 200), "func" : "math.sqrt(", "fmt" : "sqrt(", "type" : CalcType.Single},
 	{"val" : "4", "normalColor" : "white", "enterColor" : wx.Colour(200, 200, 200), "func" : "4", "fmt" : "4", "type" : CalcType.Const},
 	{"val" : "5", "normalColor" : "white", "enterColor" : wx.Colour(200, 200, 200), "func" : "5", "fmt" : "5", "type" : CalcType.Const},
 	{"val" : "6", "normalColor" : "white", "enterColor" : wx.Colour(200, 200, 200), "func" : "6", "fmt" : "6", "type" : CalcType.Const},
@@ -175,7 +175,8 @@ class CalculatorBehavior(_GG("BaseBehavior")):
 		# 补足右括号
 		bkRightLackCnt = self.getBkRightLackCnt(obj);
 		if bkRightLackCnt > 0:
-			self.__processList.append(")" * bkRightLackCnt);
+			for i in range(bkRightLackCnt):
+				self.__processList.append({"func" : ")", "fmt" : ")", "type" : CalcType.BkRight});
 		# 计算结果
 		ret = self.calcProcess();
 		if ret == None:
