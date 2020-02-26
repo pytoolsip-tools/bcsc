@@ -3,6 +3,7 @@
 # @Date:   2020-02-24 18:35:57
 # @Last Modified by:   Administrator
 # @Last Modified time: 2020-02-24 18:35:57
+import re;
 import math;
 
 import wx;
@@ -20,6 +21,8 @@ class ScientificCalculatorViewUI(wx.Panel):
 		self._curPath = curPath;
 		self.__viewCtr = viewCtr;
 		self.__enterItem = None;
+		self.__bkRightItem = None;
+		self.__commaItem = None;
 
 	def initParams(self, params):
 		# 初始化参数
@@ -66,7 +69,6 @@ class ScientificCalculatorViewUI(wx.Panel):
 		self.__resultPanel.SetSizerAndFit(box);
 		self.__resultPanel._result = resultTC;
 		self.__resultPanel._process = processTC;
-		self.__resultPanel._temp = ["0"]; # 中间值
 	
 	def createInputView(self):
 		self.__inputPanel = wx.Panel(self, size = (self.GetSize().x, -1));
@@ -74,6 +76,10 @@ class ScientificCalculatorViewUI(wx.Panel):
 		for cfg in self.getCtr().getItemConfig():
 			item = self.createItemView(self.__inputPanel, cfg);
 			items.append(item);
+			if self.getCtr().isBkRightItem(cfg):
+				self.__bkRightItem = item;
+			elif self.getCtr().isCommaItem(cfg):
+				self.__commaItem = item;
 			pass;
 		cols = 5; # 默认5行
 		rows = math.ceil(len(items) / 5);
@@ -107,13 +113,27 @@ class ScientificCalculatorViewUI(wx.Panel):
 			if self.__enterItem.SetBackgroundColour("gray"):
 				self.__enterItem.Refresh();
 				self.__enterItem._onClick = True;
-			if hasattr(self.getCtr(), "onCalculate") and callable(getattr(self.getCtr(), "onCalculate")):
-				result, process, temp = getattr(self.getCtr(), "onCalculate")(self.__resultPanel._result.GetValue(), self.__resultPanel._process.GetValue(), self.__resultPanel._temp, cfg = cfg);
+			if hasattr(self.getCtr(), "onInputCalc") and callable(getattr(self.getCtr(), "onInputCalc")):
+				# 输入并更新
+				result, process = getattr(self.getCtr(), "onInputCalc")(cfg);
 				self.__resultPanel._result.SetValue(result);
 				self.__resultPanel._process.SetValue(process);
-				self.__resultPanel._temp = temp;
+				# 更新右括号和逗号
+				if self.__bkRightItem:
+					lb = re.sub("\d+", "", self.__bkRightItem._ctx.GetLabel());
+					cnt = self.getCtr().getBkRightLackCnt();
+					if cnt != 0:
+						lb += str(cnt);
+					self.__bkRightItem._ctx.SetLabel(lb);
+				if self.__commaItem:
+					lb = re.sub("\d+", "", self.__commaItem._ctx.GetLabel());
+					cnt = self.getCtr().getCommaLackCnt();
+					if cnt != 0:
+						lb += str(cnt);
+					self.__commaItem._ctx.SetLabel(lb);
 		p.Bind(wx.EVT_LEFT_DOWN, onClickItem);
 		ctx.Bind(wx.EVT_LEFT_DOWN, onClickItem);
+		p._ctx = ctx;
 		# 更新背景色
 		p._onClick = False;
 		if p.SetBackgroundColour(normalColor):

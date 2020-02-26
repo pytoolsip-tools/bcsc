@@ -11,19 +11,24 @@ import wx;
 from _Global import _GG;
 from function.base import *;
 
-# 倒数
-def reciprocal(val):
-	return 1/val;
+from enum import Enum, unique;
+
+@unique
+class CalcType(Enum):
+	CalcOp	= 0; # 计算操作
+	Const	= 1; # 常数
+	Single	= 2; # 单参数运算
+	Double	= 3; # 双参数运算
+	Operate	= 4; # 双参数运算
+	BkLeft	= 5; # 括号（左）
+	BkRight	= 6; # 括号（右）
+	Comma	= 7; # 逗号
+	Dot		= 8; # 句号
+
 
 # 阶乘
 def factorial(val):
 	return math.factorial(int(val));
-
-# 相反
-def opposite(val):
-	if val == 0:
-		return val;
-	return -val;
 
 # 组合
 def combine(m, n):
@@ -42,53 +47,53 @@ def arrange(m, n):
 	return factorial(n) / factorial(n-m);
 
 itemConfig = [
-	{"val" : "CL", "normalColor" : wx.Colour(205, 155, 155), "enterColor" : wx.Colour(205, 96, 96), "func" : "clear"},
-	{"val" : "asin", "normalColor" : wx.Colour(240, 240, 240), "enterColor" : wx.Colour(200, 200, 200), "func" : "result", "args" : [math.asin, "asin(%s)", "无效输入"]},
-	{"val" : "acos", "normalColor" : wx.Colour(240, 240, 240), "enterColor" : wx.Colour(200, 200, 200), "func" : "result", "args" : [math.acos, "acos(%s)", "无效输入"]},
-	{"val" : "atan", "normalColor" : wx.Colour(240, 240, 240), "enterColor" : wx.Colour(200, 200, 200), "func" : "result", "args" : [math.atan, "atan(%s)", "无效输入"]},
-	{"val" : "<", "normalColor" : wx.Colour(205, 186, 150), "enterColor" : wx.Colour(205, 149, 12), "func" : "delete"},
+	{"val" : "CL", "normalColor" : wx.Colour(205, 155, 155), "enterColor" : wx.Colour(205, 96, 96), "func" : "clear", "type" : CalcType.CalcOp},
+	{"val" : "asin", "normalColor" : wx.Colour(240, 240, 240), "enterColor" : wx.Colour(200, 200, 200), "func" : "math.asin(", "fmt" : "asin(", "type" : CalcType.Single},
+	{"val" : "acos", "normalColor" : wx.Colour(240, 240, 240), "enterColor" : wx.Colour(200, 200, 200), "func" : "math.acos(", "fmt" : "acos(", "type" : CalcType.Single},
+	{"val" : "atan", "normalColor" : wx.Colour(240, 240, 240), "enterColor" : wx.Colour(200, 200, 200), "func" : "math.atan(", "fmt" : "atan(", "type" : CalcType.Single},
+	{"val" : "<", "normalColor" : wx.Colour(205, 186, 150), "enterColor" : wx.Colour(205, 149, 12), "func" : "delete", "type" : CalcType.CalcOp},
 	
-	{"val" : "e", "normalColor" : wx.Colour(210, 250, 210), "enterColor" : wx.Colour(156, 250, 156), "func" : "const", "args" : [math.e]},
-	{"val" : "sin", "normalColor" : wx.Colour(240, 240, 240), "enterColor" : wx.Colour(200, 200, 200), "func" : "result", "args" : [math.sin, "sin(%s)"]},
-	{"val" : "cos", "normalColor" : wx.Colour(240, 240, 240), "enterColor" : wx.Colour(200, 200, 200), "func" : "result", "args" : [math.cos, "cos(%s)"]},
-	{"val" : "tan", "normalColor" : wx.Colour(240, 240, 240), "enterColor" : wx.Colour(200, 200, 200), "func" : "result", "args" : [math.tan, "tan(%s)", "无效输入"]},
-	{"val" : "Pi", "normalColor" : wx.Colour(210, 250, 210), "enterColor" : wx.Colour(156, 250, 156), "func" : "const", "args" : [math.pi]},
+	{"val" : "e", "normalColor" : wx.Colour(210, 250, 210), "enterColor" : wx.Colour(156, 250, 156), "func" : "math.e", "fmt" : "e", "type" : CalcType.Const},
+	{"val" : "sin", "normalColor" : wx.Colour(240, 240, 240), "enterColor" : wx.Colour(200, 200, 200), "func" : "math.sin(", "fmt" : "sin(", "type" : CalcType.Single},
+	{"val" : "cos", "normalColor" : wx.Colour(240, 240, 240), "enterColor" : wx.Colour(200, 200, 200), "func" : "math.cos(", "fmt" : "cos(", "type" : CalcType.Single},
+	{"val" : "tan", "normalColor" : wx.Colour(240, 240, 240), "enterColor" : wx.Colour(200, 200, 200), "func" : "math.tan(", "fmt" : "tan(", "type" : CalcType.Single},
+	{"val" : "Pi", "normalColor" : wx.Colour(210, 250, 210), "enterColor" : wx.Colour(156, 250, 156), "func" : "math.pi", "fmt" : "Pi", "type" : CalcType.Const},
 	
-	{"val" : "C(x, y)", "normalColor" : wx.Colour(210, 210, 250), "enterColor" : wx.Colour(181, 160, 255), "func" : "operate", "args" : [combine]},
-	{"val" : "1/x", "normalColor" : wx.Colour(230, 230, 230), "enterColor" : wx.Colour(200, 200, 200), "func" : "result", "args" : [reciprocal, "1/(%s)", "除数不能为零"]},
-	{"val" : "|x|", "normalColor" : wx.Colour(230, 230, 230), "enterColor" : wx.Colour(200, 200, 200), "func" : "result", "args" : [math.fabs, "abs(%s)"]},
-	{"val" : "n!", "normalColor" : wx.Colour(230, 230, 230), "enterColor" : wx.Colour(200, 200, 200), "func" : "result", "args" : [factorial, "fact(%s)", "负数不能阶乘"]},
-	{"val" : "mod", "normalColor" : wx.Colour(230, 230, 230), "enterColor" : wx.Colour(200, 200, 200), "func" : "operate", "args" : ["%"]},
+	{"val" : "C(x, y)", "normalColor" : wx.Colour(210, 210, 250), "enterColor" : wx.Colour(181, 160, 255), "func" : "combine(", "fmt" : "C(", "type" : CalcType.Double},
+	{"val" : "deg", "normalColor" : wx.Colour(230, 230, 230), "enterColor" : wx.Colour(200, 200, 200), "func" : "math.degrees(", "fmt" : "deg(", "type" : CalcType.Single},
+	{"val" : "rad", "normalColor" : wx.Colour(230, 230, 230), "enterColor" : wx.Colour(200, 200, 200), "func" : "math.radians(", "fmt" : "rad(", "type" : CalcType.Single},
+	{"val" : "n!", "normalColor" : wx.Colour(230, 230, 230), "enterColor" : wx.Colour(200, 200, 200), "func" : "factorial(", "fmt" : "fact(", "type" : CalcType.Single},
+	{"val" : "%", "normalColor" : wx.Colour(230, 230, 230), "enterColor" : wx.Colour(200, 200, 200), "func" : "%", "fmt" : "%", "type" : CalcType.Operate},
 	
-	{"val" : "A(x, y)", "normalColor" : wx.Colour(210, 210, 250), "enterColor" : wx.Colour(181, 160, 255), "func" : "operate", "args" : [arrange]},
-	{"val" : "(", "normalColor" : wx.Colour(230, 230, 230), "enterColor" : wx.Colour(200, 200, 200), "func" : "brackets"},
-	{"val" : ")", "normalColor" : wx.Colour(230, 230, 230), "enterColor" : wx.Colour(200, 200, 200), "func" : "brackets"},
-	{"val" : "^", "normalColor" : wx.Colour(230, 230, 230), "enterColor" : wx.Colour(200, 200, 200), "func" : "operate", "args" : ["^"]},
-	{"val" : "/", "normalColor" : wx.Colour(230, 230, 230), "enterColor" : wx.Colour(200, 200, 200), "func" : "operate", "args" : ["/"]},
+	{"val" : "A(x, y)", "normalColor" : wx.Colour(210, 210, 250), "enterColor" : wx.Colour(181, 160, 255), "func" : "arrange(", "fmt" : "A(", "type" : CalcType.Double},
+	{"val" : "(", "normalColor" : wx.Colour(230, 230, 230), "enterColor" : wx.Colour(200, 200, 200), "func" : "(", "fmt" : "(", "type" : CalcType.BkLeft},
+	{"val" : ")", "normalColor" : wx.Colour(230, 230, 230), "enterColor" : wx.Colour(200, 200, 200), "func" : ")", "fmt" : ")", "type" : CalcType.BkRight},
+	{"val" : "|x|", "normalColor" : wx.Colour(230, 230, 230), "enterColor" : wx.Colour(200, 200, 200), "func" : "math.fabs(", "fmt" : "abs(", "type" : CalcType.Single},
+	{"val" : "/", "normalColor" : wx.Colour(230, 230, 230), "enterColor" : wx.Colour(200, 200, 200), "func" : "/", "fmt" : "/", "type" : CalcType.Operate},
 	
-	{"val" : "sqrt", "normalColor" : wx.Colour(230, 230, 230), "enterColor" : wx.Colour(200, 200, 200), "func" : "result", "args" : [math.sqrt, "sqrt(%s)", "无效输入"]},
-	{"val" : "7", "normalColor" : "white", "enterColor" : wx.Colour(200, 200, 200), "func" : "number", "args" : [7]},
-	{"val" : "8", "normalColor" : "white", "enterColor" : wx.Colour(200, 200, 200), "func" : "number", "args" : [8]},
-	{"val" : "9", "normalColor" : "white", "enterColor" : wx.Colour(200, 200, 200), "func" : "number", "args" : [9]},
-	{"val" : "*", "normalColor" : wx.Colour(230, 230, 230), "enterColor" : wx.Colour(200, 200, 200), "func" : "operate", "args" : ["*"]},
+	{"val" : "sqrt", "normalColor" : wx.Colour(230, 230, 230), "enterColor" : wx.Colour(200, 200, 200), "func" : "math.sqrt(", "fmt" : "sqrt(", "type" : CalcType.Single},
+	{"val" : "7", "normalColor" : "white", "enterColor" : wx.Colour(200, 200, 200), "func" : "7", "fmt" : "7", "type" : CalcType.Const},
+	{"val" : "8", "normalColor" : "white", "enterColor" : wx.Colour(200, 200, 200), "func" : "8", "fmt" : "8", "type" : CalcType.Const},
+	{"val" : "9", "normalColor" : "white", "enterColor" : wx.Colour(200, 200, 200), "func" : "9", "fmt" : "9", "type" : CalcType.Const},
+	{"val" : "*", "normalColor" : wx.Colour(230, 230, 230), "enterColor" : wx.Colour(200, 200, 200), "func" : "*", "fmt" : "*", "type" : CalcType.Operate},
 	
-	{"val" : "pow(x,y)", "normalColor" : wx.Colour(230, 230, 230), "enterColor" : wx.Colour(200, 200, 200), "func" : "operate", "args" : [math.pow]},
-	{"val" : "4", "normalColor" : "white", "enterColor" : wx.Colour(200, 200, 200), "func" : "number", "args" : [4]},
-	{"val" : "5", "normalColor" : "white", "enterColor" : wx.Colour(200, 200, 200), "func" : "number", "args" : [5]},
-	{"val" : "6", "normalColor" : "white", "enterColor" : wx.Colour(200, 200, 200), "func" : "number", "args" : [6]},
-	{"val" : "-", "normalColor" : wx.Colour(230, 230, 230), "enterColor" : wx.Colour(200, 200, 200), "func" : "operate", "args" : ["-"]},
+	{"val" : "pow(x,y)", "normalColor" : wx.Colour(230, 230, 230), "enterColor" : wx.Colour(200, 200, 200), "func" : "math.pow(", "fmt" : "pow(", "type" : CalcType.Double},
+	{"val" : "4", "normalColor" : "white", "enterColor" : wx.Colour(200, 200, 200), "func" : "4", "fmt" : "4", "type" : CalcType.Const},
+	{"val" : "5", "normalColor" : "white", "enterColor" : wx.Colour(200, 200, 200), "func" : "5", "fmt" : "5", "type" : CalcType.Const},
+	{"val" : "6", "normalColor" : "white", "enterColor" : wx.Colour(200, 200, 200), "func" : "6", "fmt" : "6", "type" : CalcType.Const},
+	{"val" : "-", "normalColor" : wx.Colour(230, 230, 230), "enterColor" : wx.Colour(200, 200, 200), "func" : "-", "fmt" : "-", "type" : CalcType.Operate},
 	
-	{"val" : "log(x, y)", "normalColor" : wx.Colour(230, 230, 230), "enterColor" : wx.Colour(200, 200, 200), "func" : "operate", "args" : [math.log]},
-	{"val" : "1", "normalColor" : "white", "enterColor" : wx.Colour(200, 200, 200), "func" : "number", "args" : [1]},
-	{"val" : "2", "normalColor" : "white", "enterColor" : wx.Colour(200, 200, 200), "func" : "number", "args" : [2]},
-	{"val" : "3", "normalColor" : "white", "enterColor" : wx.Colour(200, 200, 200), "func" : "number", "args" : [3]},
-	{"val" : "+", "normalColor" : wx.Colour(230, 230, 230), "enterColor" : wx.Colour(200, 200, 200), "func" : "operate", "args" : ["+"]},
+	{"val" : "log(x, y)", "normalColor" : wx.Colour(230, 230, 230), "enterColor" : wx.Colour(200, 200, 200), "func" : "math.log(", "fmt" : "log(", "type" : CalcType.Double},
+	{"val" : "1", "normalColor" : "white", "enterColor" : wx.Colour(200, 200, 200), "func" : "1", "fmt" : "1", "type" : CalcType.Const},
+	{"val" : "2", "normalColor" : "white", "enterColor" : wx.Colour(200, 200, 200), "func" : "2", "fmt" : "2", "type" : CalcType.Const},
+	{"val" : "3", "normalColor" : "white", "enterColor" : wx.Colour(200, 200, 200), "func" : "3", "fmt" : "3", "type" : CalcType.Const},
+	{"val" : "+", "normalColor" : wx.Colour(230, 230, 230), "enterColor" : wx.Colour(200, 200, 200), "func" : "+", "fmt" : "+", "type" : CalcType.Operate},
 	
-	{"val" : "ln", "normalColor" : wx.Colour(230, 230, 230), "enterColor" : wx.Colour(200, 200, 200), "func" : "result", "args" : [math.log, "ln(%s)"]},
-	{"val" : "+/-", "normalColor" : "white", "enterColor" : wx.Colour(200, 200, 200), "func" : "change", "args" : [opposite]},
-	{"val" : "0", "normalColor" : "white", "enterColor" : wx.Colour(200, 200, 200), "func" : "number", "args" : [0]},
-	{"val" : ".", "normalColor" : "white", "enterColor" : wx.Colour(200, 200, 200), "func" : "dot"},
-	{"val" : "=", "normalColor" : wx.Colour(108, 166, 205), "enterColor" : wx.Colour(79, 148, 205), "func" : "equal"},
+	{"val" : "ln", "normalColor" : wx.Colour(230, 230, 230), "enterColor" : wx.Colour(200, 200, 200), "func" : "math.log(", "fmt" : "ln(", "type" : CalcType.Single},
+	{"val" : ",", "normalColor" : "white", "enterColor" : wx.Colour(200, 200, 200), "func" : ",", "fmt" : ",", "type" : CalcType.Comma},
+	{"val" : "0", "normalColor" : "white", "enterColor" : wx.Colour(200, 200, 200), "func" : "0", "fmt" : "0", "type" : CalcType.Const},
+	{"val" : ".", "normalColor" : "white", "enterColor" : wx.Colour(200, 200, 200), "func" : ".", "fmt" : ".", "type" : CalcType.Dot},
+	{"val" : "=", "normalColor" : wx.Colour(108, 166, 205), "enterColor" : wx.Colour(79, 148, 205), "func" : "equal", "type" : CalcType.CalcOp},
 ];
 
 def __getExposeData__():
@@ -99,7 +104,11 @@ def __getExposeData__():
 def __getExposeMethod__(DoType):
 	return {
 		"getItemConfig" : DoType.Override,
-		"onCalculate" : DoType.Override,
+		"onInputCalc" : DoType.Override,
+		"isBkRightItem" : DoType.Override,
+		"isCommaItem" : DoType.Override,
+		"getBkRightLackCnt" : DoType.Override,
+		"getCommaLackCnt" : DoType.Override,
 	};
 
 def __getDepends__():
@@ -114,6 +123,9 @@ class CalculatorBehavior(_GG("BaseBehavior")):
 	def __init__(self):
 		super(CalculatorBehavior, self).__init__(__getDepends__(), __getExposeData__(), __getExposeMethod__, __file__);
 		self._className_ = CalculatorBehavior.__name__;
+		self.__result = "";
+		self.__process = "0";
+		self.__processList = [];
 		pass;
 
 	# 默认方法【obj为绑定该组件的对象，argList和argDict为可变参数，_retTuple为该组件的前个函数返回值】
@@ -124,71 +136,70 @@ class CalculatorBehavior(_GG("BaseBehavior")):
 	def getItemConfig(self, obj):
 		return itemConfig;
 	
-	def onCalculate(self, obj, result, process, temp, cfg = {}):
-		if "func" in cfg and hasattr(self, cfg["func"]):
-			return getattr(self, cfg["func"])(obj, result, process, temp, args = cfg.get("args", []));
-		return result, process, temp;
-
-	def splitResult(self, result):
-		if result:
-			ret = result.split("=");
-			if len(ret) > 1:
-				return ret[0], float(ret[1]);
-		return result, 0;
-
-	def combTemp(self, temp):
-		ret, opFmtList = [], [];
-		for item in temp:
-			isop = False;
-			if isinstance(item, dict):
-				if item.type == "result":
-					ret[-1] = item.fmt % ret[-1];
-				elif item.type == "operate":
-					opFmtList.append(item.fmt);
-					isop = True;
+	def onInputCalc(self, obj, cfg = {}):
+		if cfg["type"] == CalcType.CalcOp:
+			getattr(self, cfg["func"])(obj, cfg);
+		else:
+			if len(self.__processList) == 0:
+				self.__process = cfg["fmt"];
 			else:
-				ret.append(item);
-			if not isop and len(opFmtList) > 0:
-				fmt = opFmtList.pop();
-				ret[-2] = fmt % (ret[-2], ret[-1]);
-		return "".join(ret);
+				self.__process += cfg["fmt"];
+			self.__processList.append(cfg);
+		return self.__result, self.__process;
 
-	def calcTemp(self, temp):
-		ret, opFuncList = [], [];
-		for item in temp:
-			isop = False;
-			if isinstance(item, dict):
-				if item.type == "result":
-					ret[-1] = item.func(ret[-1]);
-				elif item.type == "operate":
-					opFuncList.append(item.func);
-					isop = True;
-			else:
-				ret.append(float(item));
-			if not isop and len(opFuncList) > 0:
-				func = opFuncList.pop();
-				ret[-2] = func(ret[-2], ret[-1]);
-				ret.pop();
-		return sum(ret);
+	def getProcess(self):
+		return "".join([p["fmt"] for p in self.__processList]);
 
-	def clear(self, obj, result, temp, args = []):
-		return "", "0", ["0"];
+	def calcProcess(self):
+		try:
+			return eval("".join([p["func"] for p in self.__processList]));
+		except Exception as e:
+			_GG("Log").d(f"Failed to calc process! Err[{e}].");
+		return None;
 
-	def delete(self, obj, result, process, temp, args = []):
-		if len(temp) > 0:
-			temp.pop();
-		if len(temp) == 0:
-			return result, "0", ["0"];
-		return result, self.combTemp(temp), temp;
-
-	def result(self, obj, result, process, temp, args = []):
-		if len(temp) > 0:
-			val = temp[-1];
-			if val.isdigit():
-				process += args[1] % val;
-				temp.append(args);
-			return result, process, temp;
-		return result, process, temp;
-	
-	def number(self, obj, result, process, temp, args = []):
+	def clear(self, obj, cfg = []):
+		self.__processList.clear();
+		self.__result, self.__process, = "", "0";
 		pass;
+
+	def delete(self, obj, cfg = []):
+		if len(self.__processList) > 0:
+			self.__processList.pop();
+		if len(self.__processList) == 0:
+			self.__process = "0";
+		else:
+			self.__process = self.getProcess();
+		pass;
+	
+	def equal(self, obj, cfg = []):
+		# 补足右括号
+		bkRightLackCnt = self.getBkRightLackCnt(obj);
+		if bkRightLackCnt > 0:
+			self.__processList.append(")" * bkRightLackCnt);
+		# 计算结果
+		ret = self.calcProcess();
+		if ret == None:
+			self.__process = "计算失败，请检查输入！";
+			self.__processList.clear();
+		else:
+			val = str(ret);
+			self.__result = self.getProcess() + "=" + val;
+			self.__process = val;
+			self.__processList = [{"func" : val, "fmt" : val, "type" : CalcType.Const}];
+		pass;
+
+	def isBkRightItem(self, obj, cfg = {}):
+		return cfg.get("type", None) == CalcType.BkRight;
+
+	def isCommaItem(self, obj, cfg = {}):
+		return cfg.get("type", None) == CalcType.Comma;
+
+	def getBkRightLackCnt(self, obj):
+		return self.__process.count("(") - self.__process.count(")");
+	
+	def getCommaLackCnt(self, obj):
+		cnt = 0;
+		for p in self.__processList:
+			if p["type"] == CalcType.Double:
+				cnt += 1;
+		return cnt - self.__process.count(",");
